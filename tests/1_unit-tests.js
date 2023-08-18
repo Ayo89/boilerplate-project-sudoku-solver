@@ -58,7 +58,5 @@ suite("Unit Tests", () => {
         assert.strictEqual(result, "Invalid puzzle");
       });
     });
-
-    //Luego de tener el código de prueba listo, ejecuta las pruebas utilizando el comando mocha en la línea de comandos. Si todo está configurado correctamente, verás los resultados de las pruebas en la terminal.
   });
 });
