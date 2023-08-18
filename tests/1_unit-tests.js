@@ -11,13 +11,14 @@ suite("Unit Tests", () => {
         const invalidPuzzle =
           "1..2..3..4..5..6..7..8..9..1..2..3..4..5..6..7..8";
         const result = solver.validate(invalidPuzzle);
-        console.log(result);
         assert.equal(result.valid, false);
         assert.equal(result.msg, "Expected puzzle to be 81 characters long");
       });
 
       test("should return invalid when puzzleString contains invalid characters", () => {
-        const invalidPuzzle = "1..2..3..4..5..6..7..8..9.1..2..3..4..5..6..7..8..9..a..2..3..4..5";
+        const invalidPuzzle =
+          "5.9..6..3.8..2..7....3..4..a..1.7.....5.6.....8.2.....4..9....5..3..2.1..4..6.7..";
+
         const result = solver.validate(invalidPuzzle);
         assert.equal(result.valid, false);
         assert.equal(result.msg, "Invalid characters in puzzle");
@@ -25,11 +26,39 @@ suite("Unit Tests", () => {
 
       test("should return valid when puzzleString is a valid puzzle", () => {
         const validPuzzle =
-          "5.9..6..3.8..2..7....3..4.....1.7.....5.6.....8.2.....4..9....5..3..2.1..4..6.7";
+          "5..91372.3...8.5.9.9.25..8.68.47.23...95..46.7.4.....5.2.......4..8916..85.72...3";
         const result = solver.validate(validPuzzle);
-        result.should.have.property("valid").equal(true);
+        console.log(result);
+        assert.equal(result.valid, true);
       });
     });
   });
-  //Luego de tener el código de prueba listo, ejecuta las pruebas utilizando el comando mocha en la línea de comandos. Si todo está configurado correctamente, verás los resultados de las pruebas en la terminal.
+
+  suite("SudokuSolver", function () {
+    const solver = new Solver();
+
+    suite("solve", function () {
+      test("should solve a valid puzzle", function () {
+        const puzzleString =
+          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        const expectedSolution =
+          "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+
+        const result = solver.solve(puzzleString);
+
+        assert.strictEqual(result, expectedSolution);
+      });
+
+      test("should return an error for an invalid puzzle", function () {
+        const puzzleString =
+          "53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....415..5....8..7.";
+
+        const result = solver.solve(puzzleString);
+
+        assert.strictEqual(result, "Invalid puzzle");
+      });
+    });
+
+    //Luego de tener el código de prueba listo, ejecuta las pruebas utilizando el comando mocha en la línea de comandos. Si todo está configurado correctamente, verás los resultados de las pruebas en la terminal.
+  });
 });
