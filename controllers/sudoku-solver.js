@@ -3,11 +3,11 @@ class SudokuSolver {
     if (typeof char === 'number') return char; // Si ya es un número, simplemente devuélvelo.
     return char.toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0);
   }
-
+    
     validate(puzzleString) {
       const regexPuzzle = /^[1-9.]+$/;
 
-      if (puzzleString.length !== 81) {
+      if (puzzleString.length < 81) {
         return { valid: false, msg: "Expected puzzle to be 81 characters long" };
       }
 
@@ -59,9 +59,7 @@ class SudokuSolver {
     }
 
     checkRegionPlacement(puzzleString, row, column, value) {
-      console.log(row)
       row = this.convertRowCharToNum(row);
-      console.log(row)
       let startRow = Math.floor(row / 3) * 3;
       let startCol = Math.floor(column / 3) * 3;
 
@@ -121,16 +119,16 @@ class SudokuSolver {
       }
       return true;
     }
-
+    console.log(solveSudoku())
     if (solveSudoku()) {
-      return board.map(row => row.join('')).join('');
+     return board.map(row => row.join('')).join('');
     } else {
-      return { valid: false, msg: "No solution" };
+      return { valid: false, msg: "Cannot be solved" };
 
     }
   }
 
-
+  
 }
 
 module.exports = SudokuSolver;
