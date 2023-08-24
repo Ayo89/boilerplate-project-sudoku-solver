@@ -1,75 +1,79 @@
 class SudokuSolver {
-  validate(puzzleString) {
-    const regexPuzzle = /^[1-9.]+$/;
+  convertRowCharToNum(char) {
+    if (typeof char === 'number') return char; // Si ya es un número, simplemente devuélvelo.
+    return char.toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0);
+  }
 
-    if (puzzleString.length !== 81) {
-      console.log(puzzleString.length);
-      return { valid: false, msg: "Expected puzzle to be 81 characters long" };
-    }
+    validate(puzzleString) {
+      const regexPuzzle = /^[1-9.]+$/;
 
-    if (!regexPuzzle.test(puzzleString)) {
-      console.log(puzzleString.length);
-      return { valid: false, msg: "Invalid characters in puzzle" };
-    }
+      if (puzzleString.length !== 81) {
+        return { valid: false, msg: "Expected puzzle to be 81 characters long" };
+      }
 
-    let board = [];
+      if (!regexPuzzle.test(puzzleString)) {
+        return { valid: false, msg: "Invalid characters in puzzle" };
+      }
 
-    for (let i = 0; i < 9; i++) {
-      board[i] = puzzleString.slice(i * 9, (i + 1) * 9).split("");
-    }
+      let board = [];
+      for (let i = 0; i < 9; i++) {
+        board[i] = puzzleString.slice(i * 9, (i + 1) * 9).split("");
+      }
 
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        let value = board[i][j];
-        if (value !== ".") {
-          board[i][j] = ".";
-          if (
-            !this.checkRowPlacement(board, i, value) ||
-            !this.checkColPlacement(board, j, value) ||
-            !this.checkRegionPlacement(board, i, j, value)
-          ) {
-            return { valid: false, msg: "Invalid puzzle" };
-
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          let value = board[i][j];
+          if (value !== ".") {
+            board[i][j] = ".";
+            if (
+              !this.checkRowPlacement(board, i, value) ||
+              !this.checkColPlacement(board, j, value) ||
+              !this.checkRegionPlacement(board, i, j, value)
+            ) {
+              return { valid: false, msg: "Invalid puzzle" };
+            }
+            board[i][j] = value;
           }
-          board[i][j] = value;
         }
       }
+      return { valid: true, board: board };
     }
-    console.log(puzzleString);
-    return { valid: true, board: board };
-  }
 
-  checkRowPlacement(puzzleString, row, value) {
-    for (let i = 0; i < 9; i++) {
-      if (puzzleString[row][i] === value) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  checkColPlacement(puzzleString, column, value) {
-    for (let i = 0; i < 9; i++) {
-      if (puzzleString[i][column] === value) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  checkRegionPlacement(puzzleString, row, column, value) {
-    let startRow = Math.floor(row / 3) * 3;
-    let startCol = Math.floor(column / 3) * 3;
-
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (puzzleString[startRow + i][startCol + j] === value) {
+    checkRowPlacement(puzzleString, row, value) {
+      row = this.convertRowCharToNum(row);
+      for (let i = 0; i < 9; i++) {
+        if (puzzleString[row][i] === value) {
           return false;
         }
       }
+      return true;
     }
-    return true;
-  }
+
+    checkColPlacement(puzzleString, column, value) {
+      for (let i = 0; i < 9; i++) {
+        if (puzzleString[i][column] === value) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    checkRegionPlacement(puzzleString, row, column, value) {
+      console.log(row)
+      row = this.convertRowCharToNum(row);
+      console.log(row)
+      let startRow = Math.floor(row / 3) * 3;
+      let startCol = Math.floor(column / 3) * 3;
+
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (puzzleString[startRow + i][startCol + j] === value) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
 
   solve(puzzleString) {
     
@@ -121,7 +125,7 @@ class SudokuSolver {
     if (solveSudoku()) {
       return board.map(row => row.join('')).join('');
     } else {
-      return { valid: false, msg: "No solution exist" };
+      return { valid: false, msg: "No solution" };
 
     }
   }

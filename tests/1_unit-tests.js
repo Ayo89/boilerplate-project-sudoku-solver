@@ -55,7 +55,7 @@ suite("Unit Tests", () => {
         const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
 
         const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkRowPlacement(board, 0, '3');
+        const canPlace = solver.checkRowPlacement(board, 'A', '3');
         assert.strictEqual(canPlace, true);
       })
 
@@ -64,7 +64,7 @@ suite("Unit Tests", () => {
           "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
         const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
         const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkRowPlacement(board, 0, '4');
+        const canPlace = solver.checkRowPlacement(board, 'A', '4');
         assert.strictEqual(canPlace, false);
       })
 
@@ -92,7 +92,7 @@ suite("Unit Tests", () => {
           "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
         const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
         const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkRegionPlacement(board, 3, 0, '4');
+        const canPlace = solver.checkRegionPlacement(board, 'D', 0, '4');
         assert.strictEqual(canPlace, true);
       })
       test("Should solve a invalid region", function () {
@@ -100,7 +100,8 @@ suite("Unit Tests", () => {
           "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
         const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
         const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkRegionPlacement(board, 3, 1, '9');
+        console.log(board)
+        const canPlace = solver.checkRegionPlacement(board, 'D', 1, '9');
         assert.strictEqual(canPlace, false);
       })
 

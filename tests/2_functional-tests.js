@@ -12,13 +12,14 @@ const noSolution = "..12.6...6..7..8..7...5...9..7.1.3......9.2.....4.8.7..9...6
 suite("Functional Tests", () => {
     suite("POST to /api/solve", () => {
         test("Solve a puzzle with valid puzzle string", done => {
+            solution = 
             chai
                 .request(server)
                 .post("/api/solve")
                 .send({ puzzle: puzzleString })
                 .end((err, res) => {
                     assert.equal(res.status, 200);
-                    assert.strictEqual(res.body, solution);
+                    assert.strictEqual(res.body.solution, solution);
                     done();
                 });
         });

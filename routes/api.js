@@ -13,7 +13,7 @@ module.exports = function (app) {
     
   app.route('/api/solve')
     .post((req, res) => {
-      const puzzle = req.body.puzzle
+      const puzzle = req.body
 
       if (solver.validate(puzzle).msg === "Expected puzzle to be 81 characters long") {
         return res.status(200).json("Expected puzzle to be 81 characters long")
@@ -29,7 +29,7 @@ module.exports = function (app) {
 
       try {
         const solution = solver.solve(puzzle)
-        return res.status(200).json(solution)
+        return res.status(200).json({solution: solution})
       } catch (error) {
         if (error) {
           return res.status(200).json("Cannot be solved")

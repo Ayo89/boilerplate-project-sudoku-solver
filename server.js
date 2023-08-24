@@ -7,9 +7,9 @@ const cors        = require('cors');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const apiRoutes         = require('./routes/api.js');
 const runner            = require('./test-runner');
-const { connectDB } = require('./db/index.js');
 
 const app = express();
+
 
 
 app.use('/public', express.static(process.cwd() + '/public'));
