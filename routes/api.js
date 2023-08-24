@@ -9,7 +9,7 @@ module.exports = function (app) {
     const { puzzle, row, column, value } = req.body;
 
     if (!puzzle || !row || !column || !value) {
-      return res.json("missing required fields");
+      return res.json({ error: "Required field missing"});
     }
 
     const rowConverted = solver.convertRowCharToNum(row);
@@ -18,16 +18,16 @@ module.exports = function (app) {
     if (
       solver.validate(puzzle).msg === "Expected puzzle to be 81 characters long"
     ) {
-      return res.json("Expected puzzle to be 81 characters long");
+      return res.json({ error: "Expected puzzle to be 81 characters long" });
     }
 
     if (solver.validate(puzzle).msg === "Invalid characters in puzzle") {
-      return res.json("Invalid characters in puzzle");
+      return res.json({ error: "Invalid characters in puzzle" });
     }
     let conflicts = [];
 
     if (valueConverted < 1 || valueConverted > 9) {
-      conflicts.push("value");
+      res.json({ error: 'Invalid value' })
     }
 
     if (
@@ -63,21 +63,24 @@ module.exports = function (app) {
     res.json({ valid: true });
   });
 
+  
   app.route("/api/solve").post((req, res) => {
     const puzzle = req.body.puzzle;
 
     if (
       solver.validate(puzzle).msg === "Expected puzzle to be 81 characters long"
     ) {
-      return res.status(200).json("Expected puzzle to be 81 characters long");
+      return res
+        .status(200)
+        .json({ error: "Expected puzzle to be 81 characters long" });
     }
 
     if (solver.validate(puzzle).msg === "Invalid characters in puzzle") {
-      return res.status(200).json("Invalid characters in puzzle");
+      return res.status(200).json({ error: "Invalid characters in puzzle" });
     }
 
     if (solver.validate(puzzle).msg === "Invalid puzzle") {
-      return res.status(200).json("Cannot be solved");
+      return res.status(200).json({ error: "Puzzle cannot be solved" });
     }
 
     try {
@@ -85,7 +88,7 @@ module.exports = function (app) {
       return res.status(200).json(solution);
     } catch (error) {
       if (error) {
-        return res.status(200).json("Cannot be solved");
+        return res.status(200).json({ error: "Puzzle cannot be solved" });
       }
     }
   });
