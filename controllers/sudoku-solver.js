@@ -24,11 +24,12 @@ class SudokuSolver {
         if (value !== ".") {
           board[i][j] = ".";
           if (
-            !this.checkRowPlacement(board, i, j, value) ||
-            !this.checkColPlacement(board, i, j, value) ||
+            !this.checkRowPlacement(board, i, value) ||
+            !this.checkColPlacement(board, j, value) ||
             !this.checkRegionPlacement(board, i, j, value)
           ) {
-            return "Invalid puzzle";
+            return { valid: false, msg: "Invalid puzzle" };
+
           }
           board[i][j] = value;
         }
@@ -38,7 +39,7 @@ class SudokuSolver {
     return { valid: true, board: board };
   }
 
-  checkRowPlacement(puzzleString, row, column, value) {
+  checkRowPlacement(puzzleString, row, value) {
     for (let i = 0; i < 9; i++) {
       if (puzzleString[row][i] === value) {
         return false;
@@ -47,7 +48,7 @@ class SudokuSolver {
     return true;
   }
 
-  checkColPlacement(puzzleString, row, column, value) {
+  checkColPlacement(puzzleString, column, value) {
     for (let i = 0; i < 9; i++) {
       if (puzzleString[i][column] === value) {
         return false;
@@ -74,7 +75,8 @@ class SudokuSolver {
     
       const validation = this.validate(puzzleString);
       if (!validation.valid) {
-        return "Invalid puzzle";
+        return { valid: false, msg: "Invalid puzzle" };
+
       }
       let board = validation.board;
 
@@ -119,7 +121,8 @@ class SudokuSolver {
     if (solveSudoku()) {
       return board.map(row => row.join('')).join('');
     } else {
-      return "No solution exists";
+      return { valid: false, msg: "No solution exist" };
+
     }
   }
 

@@ -28,7 +28,7 @@ suite("Unit Tests", () => {
         const validPuzzle =
           "5..91372.3...8.5.9.9.25..8.68.47.23...95..46.7.4.....5.2.......4..8916..85.72...3";
         const result = solver.validate(validPuzzle);
-        console.log(result);
+
         assert.equal(result.valid, true);
       });
     });
@@ -38,6 +38,72 @@ suite("Unit Tests", () => {
     const solver = new Solver();
 
     suite("solve", function () {
+      
+
+      test("should return an error for an invalid puzzle", function () {
+        const puzzleString =
+          "53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....415..5....8..7.";
+
+        const result = solver.solve(puzzleString);
+
+        assert.strictEqual(result.msg, "Invalid puzzle");
+      });
+
+      test("Should solve a valid row" , function() {
+        const puzzleString =
+          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+
+        const board = solver.validate(puzzleString).board
+        const canPlace = solver.checkRowPlacement(board, 0, '3');
+        assert.strictEqual(canPlace, true);
+      })
+
+      test("Should solve a invalid row", function () {
+        const puzzleString =
+          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+        const board = solver.validate(puzzleString).board
+        const canPlace = solver.checkRowPlacement(board, 0, '4');
+        assert.strictEqual(canPlace, false);
+      })
+
+
+      test("Should solve a valid col", function () {
+        const puzzleString =
+          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+        const board = solver.validate(puzzleString).board
+        const canPlace = solver.checkColPlacement(board,  1, '4');
+        assert.strictEqual(canPlace, true);
+      })
+
+      test("Should solve a invalid col", function () {
+        const puzzleString =
+          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+        const board = solver.validate(puzzleString).board
+        const canPlace = solver.checkColPlacement(board, 1, '9');
+        assert.strictEqual(canPlace, false);
+      })
+
+      test("Should solve a valid region", function () {
+        const puzzleString =
+          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+        const board = solver.validate(puzzleString).board
+        const canPlace = solver.checkRegionPlacement(board, 3, 0, '4');
+        assert.strictEqual(canPlace, true);
+      })
+      test("Should solve a invalid region", function () {
+        const puzzleString =
+          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+        const board = solver.validate(puzzleString).board
+        const canPlace = solver.checkRegionPlacement(board, 3, 1, '9');
+        assert.strictEqual(canPlace, false);
+      })
+
       test("should solve a valid puzzle", function () {
         const puzzleString =
           "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
@@ -49,14 +115,7 @@ suite("Unit Tests", () => {
         assert.strictEqual(result, expectedSolution);
       });
 
-      test("should return an error for an invalid puzzle", function () {
-        const puzzleString =
-          "53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....415..5....8..7.";
-
-        const result = solver.solve(puzzleString);
-
-        assert.strictEqual(result, "Invalid puzzle");
-      });
+        
     });
   });
 });
