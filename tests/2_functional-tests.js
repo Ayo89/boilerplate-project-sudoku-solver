@@ -23,7 +23,7 @@ suite("Functional Tests", () => {
         .send({ puzzle: puzzleString })
         .end((err, res) => {
           assert.equal(res.status, 200);
-          assert.equal(res.body, solution);
+          assert.equal(res.body.solution, solution);
           done();
         });
     });
@@ -35,7 +35,7 @@ suite("Functional Tests", () => {
         .send({ puzzle: invalidCharacters })
         .end((err, res) => {
           assert.equal(res.status, 200);
-          assert.strictEqual(res.body, "Invalid characters in puzzle");
+          assert.strictEqual(res.body.error, "Invalid characters in puzzle");
           done();
         });
     });
@@ -48,7 +48,7 @@ suite("Functional Tests", () => {
         .end((err, res) => {
           assert.equal(res.status, 200);
           assert.strictEqual(
-            res.body,
+            res.body.error,
             "Expected puzzle to be 81 characters long"
           );
           done();
@@ -62,7 +62,7 @@ suite("Functional Tests", () => {
         .send({ puzzle: noSolution })
         .end((err, res) => {
           assert.equal(res.status, 200);
-          assert.strictEqual(res.body, "Cannot be solved");
+          assert.strictEqual(res.body.error, "Puzzle cannot be solved");
           done();
         });
     });
@@ -80,8 +80,6 @@ suite("Functional Tests", () => {
           value: "5",
         })
         .end((err, res) => {
-          console.log(res.body.conflict);
-
           assert.equal(res.status, 200);
           assert.isObject(res.body);
           assert.property(res.body, "valid");
@@ -92,7 +90,6 @@ suite("Functional Tests", () => {
           done();
         });
     });
-
     test("Check a puzzle placement with multiple placement conflict", (done) => {
       chai
         .request(server)
@@ -100,8 +97,8 @@ suite("Functional Tests", () => {
         .send({
           puzzle: puzzleString,
           row: "A",
-          column: "10",
-          value: "10",
+          column: "3",
+          value: "5",
         })
         .end((err, res) => {
           console.log(res.body.conflict);
@@ -123,7 +120,7 @@ suite("Functional Tests", () => {
           puzzle: puzzleString,
           row: "t",
           column: "10",
-          value: "10",
+          value: "9",
         })
         .end((err, res) => {
           console.log(res.body.conflict);
@@ -132,7 +129,7 @@ suite("Functional Tests", () => {
           assert.isFalse(res.body.valid);
           assert.property(res.body, "conflict");
           assert.isArray(res.body.conflict);
-          assert.equal(res.body.conflict.length, 4);
+          assert.equal(res.body.conflict.length, 3);
           done();
         });
     });
@@ -163,7 +160,7 @@ suite("Functional Tests", () => {
           value: "10",
         })
         .end((err, res) => {
-          assert.strictEqual(res.body, "Invalid characters in puzzle");
+          assert.strictEqual(res.body.error, "Invalid characters in puzzle");
           done();
         });
     });
@@ -180,7 +177,7 @@ suite("Functional Tests", () => {
         })
         .end((err, res) => {
           assert.strictEqual(
-            res.body,
+            res.body.error,
             "Expected puzzle to be 81 characters long"
           );
           done();
