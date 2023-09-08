@@ -18,12 +18,11 @@ module.exports = function (app) {
       !/[a-i]/i.test(row) ||
       !/[1-9]/i.test(column)
     ) {
-      console.log("invalid coordinate :>> ");
       res.json({ error: "Invalid coordinate" });
       return;
     }
-    if (!/[1-9]/i.test(value)) {
-      res.json({ error: "Invalid value" });
+    if (!/^[1-9]$/i.test(value)) {
+      res.json({ error: 'Invalid value' });
       return;
     }
     if (puzzle.length != 81) {
@@ -34,11 +33,21 @@ module.exports = function (app) {
       res.json({ error: "Invalid characters in puzzle" });
       return;
     }
+    const rowIndex = "abcdefghi".indexOf(row.toLowerCase());
+    const columnIndex = parseInt(column) - 1;
+    const puzzleIndex = rowIndex * 9 + columnIndex;
+
+    // Verificar si el valor ya estaba colocado
+    if (puzzle[puzzleIndex] == value) {
+      res.json({ valid: true });
+      return;
+    }
     let validCol = solver.checkColPlacement(puzzle, row, column, value);
     let validReg = solver.checkRegionPlacement(puzzle, row, column, value);
     let validRow = solver.checkRowPlacement(puzzle, row, column, value);
     let conflicts = [];
     if (validCol && validReg && validRow) {
+      console.log({'valor': value})
       res.json({ valid: true });
     } else {
       if (!validRow) {

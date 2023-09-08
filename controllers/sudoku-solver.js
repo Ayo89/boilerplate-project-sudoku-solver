@@ -162,7 +162,6 @@ class SudokuSolver {
       return false;
     }
     let solvedString = this.transformBack(solved);
-    console.log("solvedString :>> ", solvedString);
     return solvedString;
   }
 }

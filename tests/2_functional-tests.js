@@ -205,3 +205,7 @@ suite("Functional Tests", () => {
       });
   });
 });
+
+teardown(function () {
+  chai.request(server).get("/");
+});
