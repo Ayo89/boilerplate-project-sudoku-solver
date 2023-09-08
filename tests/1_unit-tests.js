@@ -4,118 +4,87 @@ const assert = chai.assert;
 const Solver = require("../controllers/sudoku-solver.js");
 let solver = new Solver();
 
-suite("Unit Tests", () => {
-  suite("Sudoku Solver Tests", () => {
-    suite("Function validate(puzzleString)", () => {
-      test("should return invalid when puzzleString is not 81 characters", () => {
-        const invalidPuzzle =
-          "1..2..3..4..5..6..7..8..9..1..2..3..4..5..6..7..8";
-        const result = solver.validate(invalidPuzzle);
-        assert.equal(result.valid, false);
-        assert.equal(result.msg, "Expected puzzle to be 81 characters long");
-      });
-
-      test("should return invalid when puzzleString contains invalid characters", () => {
-        const invalidPuzzle =
-          "5.9..6..3.8..2..7....3..4..a..1.7.....5.6.....8.2.....4..9....5..3..2.1..4..6.7..";
-
-        const result = solver.validate(invalidPuzzle);
-        assert.equal(result.valid, false);
-        assert.equal(result.msg, "Invalid characters in puzzle");
-      });
-
-      test("should return valid when puzzleString is a valid puzzle", () => {
-        const validPuzzle =
-          "5..91372.3...8.5.9.9.25..8.68.47.23...95..46.7.4.....5.2.......4..8916..85.72...3";
-        const result = solver.validate(validPuzzle);
-
-        assert.equal(result.valid, true);
-      });
+let validPuzzle =
+  "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+suite("UnitTests", () => {
+  suite("solver tests", function () {
+    test("Logic handles a valid puzzle string of 81 characters", function (done) {
+      let complete =
+        "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+      assert.equal(solver.solve(validPuzzle), complete);
+      done();
     });
-  });
 
-  suite("SudokuSolver", function () {
-    const solver = new Solver();
+    test("Logic handles a puzzle string with invalid characters (not 1-9 or .)", function (done) {
+      let inValidPuzzle =
+        "1.5..2.84..63.12.7.2..5..g..9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+      assert.equal(solver.solve(inValidPuzzle), false);
+      done();
+    });
 
-    suite("solve", function () {
-      
+    test("Logic handles a puzzle string that is not 81 characters in length", function (done) {
+      let inValidPuzzle =
+        "1.5..2.84..63.12.7.2..5.......9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+      assert.equal(solver.solve(inValidPuzzle), false);
+      done();
+    });
 
-      test("should return an error for an invalid puzzle", function () {
-        const puzzleString =
-          "53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....415..5....8..7.";
+    test("Logic handles a valid row placement", function (done) {
+      assert.equal(solver.checkRowPlacement(validPuzzle, "A", "2", "9"), true);
+      done();
+    });
 
-        const result = solver.solve(puzzleString);
+    test("Logic handles an invalid row placement", function (done) {
+      assert.equal(solver.checkRowPlacement(validPuzzle, "A", "2", "1"), false);
+      done();
+    });
 
-        assert.strictEqual(result.msg, "Invalid puzzle");
-      });
+    test("Logic handles a valid column placement", function (done) {
+      assert.equal(solver.checkColPlacement(validPuzzle, "A", "2", "8"), true);
+      done();
+    });
 
-      test("Should solve a valid row" , function() {
-        const puzzleString =
-          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
+    test("Logic handles an invalid column placement", function (done) {
+      assert.equal(solver.checkColPlacement(validPuzzle, "A", "2", "9"), false);
+      done();
+    });
 
-        const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkRowPlacement(board, 'A', '3');
-        assert.strictEqual(canPlace, true);
-      })
+    test("Logic handles a valid region (3x3 grid) placement", function (done) {
+      assert.equal(
+        solver.checkRegionPlacement(validPuzzle, "A", "2", "3"),
+        true
+      );
+      done();
+    });
 
-      test("Should solve a invalid row", function () {
-        const puzzleString =
-          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
-        const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkRowPlacement(board, 'A', '4');
-        assert.strictEqual(canPlace, false);
-      })
-
-
-      test("Should solve a valid col", function () {
-        const puzzleString =
-          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
-        const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkColPlacement(board,  1, '4');
-        assert.strictEqual(canPlace, true);
-      })
-
-      test("Should solve a invalid col", function () {
-        const puzzleString =
-          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
-        const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkColPlacement(board, 1, '9');
-        assert.strictEqual(canPlace, false);
-      })
-
-      test("Should solve a valid region", function () {
-        const puzzleString =
-          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
-        const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkRegionPlacement(board, 'D', 0, '4');
-        assert.strictEqual(canPlace, true);
-      })
-      test("Should solve a invalid region", function () {
-        const puzzleString =
-          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        const expectedSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
-        const board = solver.validate(puzzleString).board
-        const canPlace = solver.checkRegionPlacement(board, 'D', 1, '9');
-        assert.strictEqual(canPlace, false);
-      })
-
-      test("should solve a valid puzzle", function () {
-        const puzzleString =
-          "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        const expectedSolution =
-          "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
-
-        const result = solver.solve(puzzleString);
-
-        assert.strictEqual(result, expectedSolution);
-      });
-
-        
+    test("Logic handles an invalid region (3x3 grid) placement", function (done) {
+      assert.equal(
+        solver.checkRegionPlacement(validPuzzle, "A", "2", "1"),
+        false
+      );
+      done();
+    });
+    test("Valid puzzle strings pass the solver", function (done) {
+      assert.equal(
+        solver.solve(validPuzzle),
+        "135762984946381257728459613694517832812936745357824196473298561581673429269145378"
+      );
+      done();
+    });
+    test("Invalid puzzle strings fail the solver", function (done) {
+      let inValidPuzzle =
+        "115..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+      assert.equal(solver.solve(inValidPuzzle), false);
+      done();
+    });
+    test("Solver returns the the expected solution for an incomplete puzzzle", function (done) {
+      assert.equal(
+        solver.solve(
+          "..839.7.575.....964..1.......16.29846.9.312.7..754.....62..5.78.8...3.2...492...1"
+        ),
+        "218396745753284196496157832531672984649831257827549613962415378185763429374928561"
+      );
+      done();
     });
   });
 });
